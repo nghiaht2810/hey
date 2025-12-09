@@ -6,3 +6,6 @@ node_modules
 *.log
 public/build
 .remix
+
+# Local Netlify folder
+.netlify
