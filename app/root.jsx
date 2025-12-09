@@ -11,9 +11,12 @@ import {
 import { ThemeProvider } from "~/contexts/ThemeContext";
 import { LanguageProvider } from "~/contexts/LanguageContext";
 import styles from "~/styles/global.css?url";
-import { Home, RefreshCcw } from "lucide-react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useEffect, useState } from "react";
+import { Home, RefreshCcw, AlertTriangle } from "lucide-react";
+import { motion } from "framer-motion";
+import { useEffect, useState, Suspense, lazy } from "react";
+
+// Lazy load component 3D để tối ưu hiệu suất tải trang ban đầu
+const SpaceScene = lazy(() => import("~/components/canvas/SpaceScene"));
 
 export const links = () => [
   { rel: "stylesheet", href: styles },
@@ -48,180 +51,115 @@ export default function App() {
   );
 }
 
-// --- TRANG 404 CAO CẤP VỚI HIỆU ỨNG 3D ---
+// --- TRANG 404 NEXT-GEN: 3D WEBGL + MOTION ---
 
 export function ErrorBoundary() {
   const error = useRouteError();
   const is404 = isRouteErrorResponse(error) && error.status === 404;
-
-  // --- Logic xử lý 3D Mouse Parallax ---
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  // Làm mượt chuyển động chuột (spring physics)
-  const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
-  const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
-
-  // Biến đổi tọa độ chuột thành góc xoay 3D (-20 độ đến 20 độ)
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["20deg", "-20deg"]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-20deg", "20deg"]);
-
-  // Hiệu ứng ánh sáng di chuyển theo chuột
-  const brightness = useTransform(mouseY, [-0.5, 0.5], [1.2, 0.8]);
-
-  function handleMouseMove(event) {
-    // Lấy tọa độ chuột chuẩn hóa từ -0.5 đến 0.5
-    const rect = event.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseXPos = event.clientX - rect.left;
-    const mouseYPos = event.clientY - rect.top;
-    const xPct = mouseXPos / width - 0.5;
-    const yPct = mouseYPos / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  }
-
-  function handleMouseLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
-  return (
-    <Layout>
-      <div 
-        className="relative min-h-screen w-full overflow-hidden bg-[#0f172a] text-white flex items-center justify-center perspective-1000"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        {/* --- Background Animated Orbs (Các khối màu trôi nổi) --- */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div 
-            animate={{ x: [0, 100, 0], y: [0, -50, 0], scale: [1, 1.2, 1] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-purple-600/30 rounded-full blur-[120px]" 
-          />
-          <motion.div 
-            animate={{ x: [0, -100, 0], y: [0, 100, 0], scale: [1, 1.5, 1] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-blue-600/20 rounded-full blur-[120px]" 
-          />
-        </div>
-
-        {/* --- Floating Particles (Hạt bụi không gian) --- */}
-        <Particles />
-
-        {/* --- 3D Card Container --- */}
-        <div 
-          className="relative z-10 w-full max-w-2xl p-8" 
-          style={{ perspective: 1000 }} // Tạo chiều sâu 3D
-        >
-          <motion.div
-            style={{
-              rotateX,
-              rotateY,
-              filter: `brightness(${brightness})`,
-              transformStyle: "preserve-3d", // Quan trọng để các element con cũng 3D
-            }}
-            className="relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-12 shadow-2xl shadow-black/50 text-center"
-          >
-            {/* Hiệu ứng chiều sâu cho chữ (translateZ) */}
-            <motion.div 
-              style={{ transform: "translateZ(60px)" }}
-              className="relative"
-            >
-              <h1 className="text-[150px] md:text-[200px] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-tr from-blue-400 via-purple-400 to-emerald-400 drop-shadow-2xl select-none">
-                {is404 ? "404" : "500"}
-              </h1>
-              
-              {/* Bóng đổ giả lập dưới chân chữ */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2/3 h-8 bg-black/40 blur-xl rounded-full" />
-            </motion.div>
-
-            <motion.div 
-              style={{ transform: "translateZ(40px)" }}
-              className="mt-6 space-y-6"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-wide">
-                {is404 ? "Lạc vào hư vô?" : "Hệ thống gặp sự cố"}
-              </h2>
-              <p className="text-slate-400 text-lg max-w-md mx-auto leading-relaxed">
-                {is404 
-                  ? "Trang bạn đang tìm kiếm dường như đã trôi dạt vào vũ trụ khác hoặc không còn tồn tại."
-                  : "Đã có lỗi xảy ra từ phía chúng tôi. Vui lòng thử lại sau."}
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-4 pt-4">
-                <Link to="/">
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(59, 130, 246, 0.5)" }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold shadow-lg transition-all"
-                  >
-                    <Home size={20} />
-                    Trở về Trái Đất
-                  </motion.button>
-                </Link>
-                
-                <motion.button
-                  onClick={() => window.location.reload()}
-                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-8 py-3.5 rounded-full bg-white/5 border border-white/10 text-white font-semibold backdrop-blur-md transition-all hover:bg-white/10"
-                >
-                  <RefreshCcw size={20} />
-                  Thử lại
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-    </Layout>
-  );
-}
-
-// Component tạo hiệu ứng hạt bụi bay lơ lửng
-function Particles() {
-  // Chỉ render ở client để tránh lỗi hydration mismatch vì random
   const [mounted, setMounted] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
-  // Tạo mảng 20 hạt ngẫu nhiên
-  const particles = Array.from({ length: 20 });
-
   return (
-    <div className="absolute inset-0 pointer-events-none z-0">
-      {particles.map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{
-            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 1000),
-            opacity: 0,
-          }}
-          animate={{
-            y: [null, Math.random() * -100], // Bay lên
-            opacity: [0, Math.random() * 0.5 + 0.2, 0], // Hiện rồi ẩn
-          }}
-          transition={{
-            duration: Math.random() * 10 + 10, // 10-20s
-            repeat: Infinity,
-            ease: "linear",
-            delay: Math.random() * 5,
-          }}
-          className="absolute rounded-full bg-white"
-          style={{
-            width: Math.random() * 4 + 1 + "px",
-            height: Math.random() * 4 + 1 + "px",
-          }}
-        />
-      ))}
-    </div>
+    <Layout>
+      <div className="relative min-h-screen w-full bg-black text-white overflow-hidden flex flex-col items-center justify-center">
+        
+        {/* --- LỚP 1: 3D BACKGROUND (React Three Fiber) --- */}
+        {/* Chỉ render ở client để tránh lỗi SSR */}
+        {mounted && (
+          <Suspense fallback={<div className="absolute inset-0 bg-slate-900" />}>
+            <SpaceScene />
+          </Suspense>
+        )}
+
+        {/* --- LỚP 2: GLASSMORPHISM UI (Framer Motion) --- */}
+        <motion.div 
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10 w-full max-w-3xl px-6"
+        >
+          {/* Thẻ kính mờ */}
+          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2rem] p-8 md:p-12 shadow-2xl shadow-purple-500/20 text-center overflow-hidden relative">
+            
+            {/* Hiệu ứng ánh sáng quét qua thẻ (Sheen effect) */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent skew-x-12 translate-x-[-150%] animate-[shimmer_5s_infinite]" />
+
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="mb-6 inline-block"
+            >
+              <h1 className="text-[8rem] md:text-[10rem] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">
+                {is404 ? "404" : "Error"}
+              </h1>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300">
+                {is404 ? "Lạc Lối Trong Không Gian Số?" : "Sự Cố Hệ Thống"}
+              </h2>
+              
+              <p className="text-slate-300 text-lg mb-8 max-w-lg mx-auto font-light leading-relaxed">
+                {is404 
+                  ? "Trang bạn tìm kiếm có thể đã bị hố đen nuốt chửng hoặc chưa từng tồn tại trong vũ trụ này." 
+                  : "Có vẻ như động cơ phản lực của chúng tôi đang gặp trục trặc kỹ thuật."}
+              </p>
+
+              {/* Debug info (ẩn đi, chỉ hiện khi cần thiết) */}
+              {!is404 && (
+                <div className="mb-8 p-4 bg-red-950/30 border border-red-500/30 rounded-lg text-left text-xs font-mono text-red-300 overflow-auto max-h-32">
+                  <div className="flex items-center gap-2 mb-2 font-bold text-red-400">
+                    <AlertTriangle size={14} /> Error Log:
+                  </div>
+                  {error instanceof Error ? error.message : "Unknown Error"}
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link to="/">
+                  <motion.button
+                    whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(79, 70, 229, 0.6)" }}
+                    whileTap={{ scale: 0.95 }}
+                    className="group relative px-8 py-3.5 rounded-full bg-white text-black font-bold text-lg overflow-hidden transition-all"
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      <Home size={20} /> Quay Về Trạm Chính
+                    </span>
+                    {/* Hiệu ứng nền nút */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </motion.button>
+                </Link>
+
+                <motion.button
+                  onClick={() => window.location.reload()}
+                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.15)" }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-3.5 rounded-full border border-white/20 text-white font-semibold backdrop-blur-md transition-colors flex items-center gap-2 hover:border-white/40"
+                >
+                  <RefreshCcw size={18} /> Thử Kết Nối Lại
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
+          
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 2 }}
+            className="mt-8 text-white/20 text-xs text-center font-mono"
+          >
+            INTERACTIVE 3D ENVIRONMENT • RENDERED WITH WEBGL
+          </motion.p>
+        </motion.div>
+      </div>
+    </Layout>
   );
 }
