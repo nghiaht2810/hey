@@ -1,3 +1,5 @@
+// app/data/portfolio.js
+
 export const DATA_VI = {
   profile: {
     name: "Hoàng Trọng Nghĩa",
@@ -47,7 +49,6 @@ export const DATA_VI = {
     copied: "Đã chép!",
     frontend: "Giao diện",
     backend: "Hệ thống",
-    // Thêm phần này
     contact: "Liên hệ",
     contactName: "Tên của bạn",
     contactEmail: "Email",
@@ -109,7 +110,6 @@ export const DATA_EN = {
     copied: "Copied!",
     frontend: "Frontend",
     backend: "Backend",
-    // Thêm phần này
     contact: "Contact Me",
     contactName: "Your Name",
     contactEmail: "Email Address",
@@ -125,4 +125,19 @@ export const SKILLS_COMMON = {
   frontend: ["React.js", "Next.js", "Tailwind CSS", "Lavarel"],
   backend: ["C# / .NET Core", "Node.js", "Python", "MongoDB"],
   tools: ["Git", "Docker", "Figma", "VS Code"],
+};
+
+// --- QUAN TRỌNG: Thêm export này để sửa lỗi import ở GithubCard và LocationCard ---
+export const portfolioData = {
+  ...DATA_EN, // Sử dụng dữ liệu tiếng Anh làm mặc định
+  skills: SKILLS_COMMON,
+  // Thêm các trường social/github mà GithubCard.jsx yêu cầu
+  github: {
+    username: "nghiaht2810" 
+  },
+  social: {
+    github: "https://github.com/nghiaht2810",
+    linkedin: "https://linkedin.com/in/nghiaht2810",
+    facebook: "https://facebook.com/nghiaht2810"
+  }
 };

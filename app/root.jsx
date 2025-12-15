@@ -14,10 +14,10 @@ import { LanguageProvider } from "~/contexts/LanguageContext";
 import styles from "~/styles/global.css?url";
 import { Home, RefreshCcw, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
-import { useEffect, useState, Suspense, lazy, useRef } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import Lenis from "lenis";
 
-// Lazy load component 3D (giữ nguyên từ bước trước)
+// Lazy load component 3D
 const SpaceScene = lazy(() => import("~/components/canvas/SpaceScene"));
 
 export const links = () => [
@@ -26,25 +26,29 @@ export const links = () => [
 ];
 
 // --- COMPONENT: SMOOTH SCROLL WRAPPER ---
-// Thiết lập Lenis để cuộn trang mượt như lụa
+// Đã sửa lỗi Memory Leak ở đây
 function SmoothScroll({ children }) {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2, // Thời gian trượt
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Hàm vật lý
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       touchMultiplier: 2,
     });
 
+    let reqId; // Biến lưu ID của animation frame
+
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      reqId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    reqId = requestAnimationFrame(raf);
 
+    // Cleanup function: Chạy khi component unmount
     return () => {
-      lenis.destroy();
+      cancelAnimationFrame(reqId); // Hủy vòng lặp animation
+      lenis.destroy();             // Hủy instance Lenis
     };
   }, []);
 
@@ -52,7 +56,6 @@ function SmoothScroll({ children }) {
 }
 
 // --- COMPONENT: SCROLL PROGRESS BAR ---
-// Thanh tiến trình chạy ngang trên đầu trang
 function ProgressBar() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -79,7 +82,6 @@ export function Layout({ children }) {
         <Links />
       </head>
       <body>
-        {/* Bọc toàn bộ app trong SmoothScroll */}
         <SmoothScroll>
           <ProgressBar />
           {children}
@@ -92,19 +94,18 @@ export function Layout({ children }) {
 }
 
 export default function App() {
-  const location = useLocation(); // Lấy thông tin trang hiện tại để làm key cho animation
+  const location = useLocation();
 
   return (
     <ThemeProvider>
       <LanguageProvider>
-        {/* AnimatePresence giúp tạo hiệu ứng khi component Outlet thay đổi (chuyển trang) */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={location.pathname} // Key thay đổi -> kích hoạt animation
-            initial={{ opacity: 0, y: 20 }} // Trạng thái bắt đầu: mờ và thấp hơn 20px
-            animate={{ opacity: 1, y: 0 }}  // Trạng thái kết thúc: rõ và về vị trí gốc
-            exit={{ opacity: 0, y: -20 }}   // Trạng thái thoát: mờ và bay lên 20px
-            transition={{ duration: 0.5, ease: "easeOut" }} // Thời gian chuyển: 0.5s
+            key={location.pathname}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="w-full"
           >
             <Outlet />
@@ -115,7 +116,6 @@ export default function App() {
   );
 }
 
-// --- GIỮ NGUYÊN PHẦN ERROR BOUNDARY (TRANG 404 3D) ---
 export function ErrorBoundary() {
   const error = useRouteError();
   const is404 = isRouteErrorResponse(error) && error.status === 404;

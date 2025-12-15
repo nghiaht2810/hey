@@ -38,3 +38,5 @@ export const SectionTitle = ({ icon: Icon, title, className = "" }) => (
     <span>{title}</span>
   </div>
 );
+
+export default Card;
