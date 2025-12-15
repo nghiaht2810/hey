@@ -1,3 +1,4 @@
+// app/routes/_index.jsx
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
@@ -11,6 +12,7 @@ import { ContactCard } from "~/components/sections/ContactCard";
 import { EducationCard } from "~/components/sections/EducationCard";
 import { OpenToWorkCard } from "~/components/sections/OpenToWorkCard";
 import { ProjectShowcase } from "~/components/sections/ProjectShowcase";
+import { DonateCard } from "~/components/sections/DonateCard"; // <--- Import mới
 
 // Import data
 import { portfolioData } from "~/data/portfolio";
@@ -37,41 +39,31 @@ export default function Index() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 auto-rows-min">
           
           {/* --- HÀNG 1: PROFILE & SHOP --- */}
-          
-          {/* FIX: Thêm 'h-full' và '[&>div]:h-full' 
-              - h-full: Div bao ngoài sẽ cao bằng hàng xóm (ShopCard)
-              - [&>div]:h-full: Ép component ProfileSection bên trong (thẻ div con đầu tiên) cao 100%
-          */}
           <div className="md:col-span-2 md:row-span-2 h-full [&>div]:h-full">
             <ProfileSection />
           </div>
-
-          {/* ShopCard nằm bên phải, Grid sẽ tự động stretch 2 cột này bằng nhau */}
           <ShopCard />
 
-
           {/* --- CÁC HÀNG TIẾP THEO --- */}
-          
-          {/* Project Showcase */}
           <div className="md:col-span-3">
              <ProjectShowcase />
           </div>
 
           {/* Các card nhỏ */}
+          {/* Sắp xếp: Github | OpenToWork | TechStack */}
           <GithubCard />
           <OpenToWorkCard />
           <TechStack /> 
+          
+          {/* Hàng tiếp theo: Education | Donate | ... */}
           <EducationCard />
-
+          <DonateCard /> {/* <--- Đặt DonateCard ngay sau EducationCard */}
 
           {/* --- HÀNG CUỐI --- */}
-          
-          {/* Contact */}
           <div className="md:col-span-2">
             <ContactCard />
           </div>
 
-          {/* Location */}
           <div className="md:col-span-1">
              <LocationCard />
           </div>

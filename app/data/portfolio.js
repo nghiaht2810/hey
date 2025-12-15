@@ -16,11 +16,12 @@ export const DATA_VI = {
     {
       school: "University of Greenwich",
       degree: "Cử nhân CNTT",
-      gpa: "6.5/10",
+      gpa: "7.5/10",
       period: "2021 - Hiện tại",
+      major: "Kỹ thuật phần mềm", // <--- Thêm dòng này
+      honors: "Sinh viên giỏi"
     }
   ],
-  // Dữ liệu Experience cũ (giữ lại để tham khảo hoặc nếu muốn dùng lại)
   experience: [
     {
       company: "Công ty TNHH TM & DV NINA",
@@ -29,7 +30,6 @@ export const DATA_VI = {
       description: "Phát triển ứng dụng React.js, tối ưu hóa E-commerce (tăng 40% tương tác), tích hợp bản đồ số và thực tế ảo."
     }
   ],
-  // --- DỮ LIỆU MỚI CHO DOMAIN SALES ---
   domains: [
     {
       name: "owls.digital",
@@ -62,7 +62,7 @@ export const DATA_VI = {
   ],
   labels: {
     techStack: "Kỹ năng Công nghệ",
-    experience: "Kinh nghiệm", // Có thể đổi thành "Tài sản số" nếu muốn
+    experience: "Kinh nghiệm", 
     education: "Học vấn",
     projects: "Dự án Nổi bật",
     featured: "Nổi bật",
@@ -79,10 +79,12 @@ export const DATA_VI = {
     sending: "Đang gửi...",
     sent: "Đã gửi thành công!",
     error: "Có lỗi xảy ra!",
-    // Label mới cho component Domain
     domainsTitle: "Tên miền đang bán",
     domainsSubtitle: "Tài sản số",
-    buyNow: "Mua ngay"
+    buyNow: "Mua ngay",
+    // Thêm nhãn cho Donate
+    donateTitle: "Donate",
+    donateDesc: "Mời tôi ly cà phê"
   }
 };
 
@@ -115,7 +117,6 @@ export const DATA_EN = {
       description: "Spearheaded React.js app development, optimized E-commerce platform (40% engagement boost), integrated Google Maps API and virtual tours."
     }
   ],
-  // --- NEW DOMAIN DATA ---
   domains: [
     {
       name: "owls.digital",
@@ -165,10 +166,12 @@ export const DATA_EN = {
     sending: "Sending...",
     sent: "Message Sent!",
     error: "Something went wrong!",
-    // New labels for Domain component
     domainsTitle: "Domains For Sale",
     domainsSubtitle: "Digital Assets",
-    buyNow: "Buy Now"
+    buyNow: "Buy Now",
+    // New labels for Donate
+    donateTitle: "Donate",
+    donateDesc: "Buy me a coffee"
   }
 };
 
@@ -188,5 +191,7 @@ export const portfolioData = {
     github: "https://github.com/33nghia2001",
     linkedin: "https://linkedin.com/in/nghiaht2810",
     facebook: "https://www.facebook.com/nghiaht28102003"
-  }
+  },
+  // --- THÊM LINK DONATE Ở ĐÂY ---
+  donate: "https://buymeacoffee.com/nghiaht281003"
 };
