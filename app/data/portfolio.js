@@ -20,12 +20,32 @@ export const DATA_VI = {
       period: "2021 - Hiện tại",
     }
   ],
+  // Dữ liệu Experience cũ (giữ lại để tham khảo hoặc nếu muốn dùng lại)
   experience: [
     {
       company: "Công ty TNHH TM & DV NINA",
       role: "Web Developer",
       period: "11/2023 - 08/2025",
       description: "Phát triển ứng dụng React.js, tối ưu hóa E-commerce (tăng 40% tương tác), tích hợp bản đồ số và thực tế ảo."
+    }
+  ],
+  // --- DỮ LIỆU MỚI CHO DOMAIN SALES ---
+  domains: [
+    {
+      name: "owls.digital",
+      tagline: "Agency & Tech Startup",
+      price: "Thương lượng",
+      status: "Premium",
+      description: "Tên miền hoàn hảo cho các Digital Agency, công ty công nghệ hoặc Portfolio sáng tạo. Ngắn gọn, dễ nhớ và chuyên nghiệp.",
+      features: ["u/owls", "Digital Ext", "Brandable"]
+    },
+    {
+      name: "cown.name.vn",
+      tagline: "Thương hiệu cá nhân",
+      price: "Liên hệ",
+      status: "Available",
+      description: "Tên miền độc đáo cho thương hiệu cá nhân. Ngắn (4 ký tự), phát âm dễ dàng, phù hợp làm blog hoặc CV online.",
+      features: ["Ngắn gọn", "Cá nhân", "Độc đáo"]
     }
   ],
   projects: [
@@ -36,14 +56,13 @@ export const DATA_VI = {
       tech: ["Python", "Django", "Nextjs", "React", "Tailwind CSS"],
       desc: "Một nền tảng thương mại điện tử đa nhà cung cấp hiện đại, an toàn và có khả năng mở rộng cao, kết nối hiệu quả người bán và người mua.",
       highlight: true,
-      // --- CÁC TRƯỜNG MỚI CHO NÚT BẤM ---
-      sourceUrl: "https://github.com/33nghia2001/owls", // Link source code
-      demoUrl: "https://owls.asia" // Link live demo
+      sourceUrl: "https://github.com/33nghia2001/owls",
+      demoUrl: "https://owls.asia"
     }
   ],
   labels: {
     techStack: "Kỹ năng Công nghệ",
-    experience: "Kinh nghiệm",
+    experience: "Kinh nghiệm", // Có thể đổi thành "Tài sản số" nếu muốn
     education: "Học vấn",
     projects: "Dự án Nổi bật",
     featured: "Nổi bật",
@@ -59,7 +78,11 @@ export const DATA_VI = {
     send: "Gửi tin nhắn",
     sending: "Đang gửi...",
     sent: "Đã gửi thành công!",
-    error: "Có lỗi xảy ra!"
+    error: "Có lỗi xảy ra!",
+    // Label mới cho component Domain
+    domainsTitle: "Tên miền đang bán",
+    domainsSubtitle: "Tài sản số",
+    buyNow: "Mua ngay"
   }
 };
 
@@ -92,6 +115,25 @@ export const DATA_EN = {
       description: "Spearheaded React.js app development, optimized E-commerce platform (40% engagement boost), integrated Google Maps API and virtual tours."
     }
   ],
+  // --- NEW DOMAIN DATA ---
+  domains: [
+    {
+      name: "owls.digital",
+      tagline: "Agency & Tech Startup",
+      price: "Make Offer",
+      status: "Premium",
+      description: "Perfect domain for Digital Agencies, Tech Startups or Creative Portfolios. Short, memorable, and professional.",
+      features: ["u/owls", "Digital Ext", "Brandable"]
+    },
+    {
+      name: "cown.name.vn",
+      tagline: "Personal Identity",
+      price: "Contact",
+      status: "Available",
+      description: "Unique domain for personal branding. Short (4 chars), easy to pronounce, suitable for blogs or online CVs.",
+      features: ["Short", "Personal", "Unique"]
+    }
+  ],
   projects: [
     {
       name: "Owls",
@@ -100,9 +142,8 @@ export const DATA_EN = {
       tech: ["Python", "Django", "Nextjs", "React", "Tailwind CSS"],
       desc: "A modern, secure, and highly scalable multi-vendor e-commerce platform that effectively connects sellers and buyers.",
       highlight: true,
-      // --- NEW FIELDS FOR BUTTONS ---
-      sourceUrl: "https://github.com/33nghia2001/owls", // Source code link
-      demoUrl: "https://owls.asia" // Live demo link
+      sourceUrl: "https://github.com/33nghia2001/owls",
+      demoUrl: "https://owls.asia"
     }
   ],
   labels: {
@@ -123,7 +164,11 @@ export const DATA_EN = {
     send: "Send Message",
     sending: "Sending...",
     sent: "Message Sent!",
-    error: "Something went wrong!"
+    error: "Something went wrong!",
+    // New labels for Domain component
+    domainsTitle: "Domains For Sale",
+    domainsSubtitle: "Digital Assets",
+    buyNow: "Buy Now"
   }
 };
 

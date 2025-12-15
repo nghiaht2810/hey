@@ -1,65 +1,95 @@
 import React from 'react';
-import { Briefcase, Calendar, Building2, ArrowRight } from 'lucide-react';
-import { Card, SectionTitle } from '../ui/Card';
+import { Globe, ArrowUpRight, ShoppingBag, Sparkles } from 'lucide-react';
+import { Card } from '../ui/Card';
 import { useLanguage } from '../../contexts/LanguageContext';
 
+// QUAN TRỌNG: Giữ tên là ExperienceCard để _index.jsx không bị lỗi import
 export const ExperienceCard = () => {
   const { data } = useLanguage();
   
-  return (
-    <Card span="md:row-span-2" className="relative overflow-hidden bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-      {/* Decorative Background */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-slate-100 dark:bg-slate-800/50 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
-      
-      <div className="relative z-10 h-full flex flex-col">
-        <SectionTitle icon={Briefcase} title={data.labels.experience} className="mb-6" />
-        
-        <div className="flex-1 relative pl-2">
-          {/* Timeline Line */}
-          <div className="absolute left-[11px] top-2 bottom-4 w-px bg-gradient-to-b from-blue-500 via-slate-200 dark:via-slate-700 to-transparent" />
+  // Kiểm tra an toàn dữ liệu
+  const domains = data.domains || [];
 
-          <div className="space-y-8">
-            {data.experience.map((exp, i) => (
-              <div key={i} className="group relative pl-8">
-                {/* Timeline Dot */}
-                <div className="absolute left-[3px] top-[5px] w-[17px] h-[17px] rounded-full border-[3px] border-white dark:border-slate-900 bg-slate-200 dark:bg-slate-700 group-hover:bg-blue-500 group-hover:scale-110 transition-all duration-300 z-10 shadow-sm">
-                   <div className="absolute inset-0 rounded-full bg-blue-500/30 animate-ping opacity-0 group-hover:opacity-100" />
-                </div>
+  return (
+    <Card span="md:row-span-2" className="relative overflow-hidden bg-[#0B1121] border border-slate-800 rounded-[32px] p-0 shadow-2xl">
+      
+      {/* Background Gradients (Ambient Light) */}
+      <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-60 h-60 bg-blue-600/10 rounded-full blur-[60px] pointer-events-none" />
+
+      <div className="relative z-10 h-full flex flex-col p-6">
+        
+        {/* --- Header: Giống mẫu --- */}
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex flex-col gap-1">
+             {/* Icon nhỏ trang trí */}
+            <div className="w-10 h-10 rounded-2xl bg-slate-800/50 flex items-center justify-center border border-white/5 mb-2 text-purple-400">
+                <ShoppingBag size={18} />
+            </div>
+            <h2 className="text-2xl font-black text-white leading-tight tracking-tight">
+              {data.labels.domainsTitle || "Tên miền"} <br />
+              <span className="text-slate-400">
+                {data.labels.domainsAction || "đang bán"}
+              </span>
+            </h2>
+          </div>
+          
+          <div className="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 text-[11px] font-bold uppercase tracking-wider shadow-lg backdrop-blur-md">
+            {data.labels.domainsSubtitle || "Tài sản số"}
+          </div>
+        </div>
+
+        {/* --- List Items (Scrollable) --- */}
+        <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-1 custom-scrollbar pb-2">
+          {domains.map((domain, i) => (
+            <div key={i} className="group relative p-4 rounded-[24px] bg-[#151a2d] border border-white/5 hover:border-purple-500/30 hover:bg-[#1a1f35] transition-all duration-300 shadow-lg">
                 
-                {/* Content Card */}
-                <div className="relative p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md hover:border-blue-100 dark:hover:border-blue-500/30 transition-all duration-300">
-                  
-                  {/* Header */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-                    <div>
-                        <h3 className="font-bold text-lg text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {exp.role}
-                        </h3>
-                        <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 mt-1">
-                            <Building2 size={14} className="text-slate-400" />
-                            <span>{exp.company}</span>
+                <div className="flex gap-4">
+                    {/* Icon Column */}
+                    <div className="shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-[#2a2640] flex items-center justify-center text-purple-400 border border-white/5 group-hover:scale-105 group-hover:text-pink-400 transition-all shadow-inner">
+                            <Globe size={20} strokeWidth={1.5} />
                         </div>
                     </div>
-                    
-                    <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 px-2 py-1 rounded border border-slate-200 dark:border-slate-700 w-fit whitespace-nowrap">
-                        <Calendar size={12} />
-                        {exp.period}
-                    </div>
-                  </div>
 
-                  {/* Description */}
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700/50 pt-3 mt-1">
-                    {exp.description}
-                  </p>
-                  
-                  {/* Decorative Arrow on Hover */}
-                  <div className="absolute right-4 bottom-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-blue-500">
-                     <ArrowRight size={16} />
-                  </div>
+                    {/* Content Column */}
+                    <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        
+                        {/* Top: Name & Badge */}
+                        <div className="flex justify-between items-start gap-2 mb-1">
+                            <h3 className="text-lg font-bold text-white tracking-tight truncate pr-2 group-hover:text-purple-200 transition-colors">
+                                {domain.name}
+                            </h3>
+                            
+                            {/* Price Badge (Green/Teal style in image) */}
+                            <div className="shrink-0 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 uppercase tracking-wide">
+                                {domain.price}
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-xs text-slate-400 font-medium line-clamp-2 leading-relaxed mb-3">
+                            {domain.description}
+                        </p>
+
+                        {/* Bottom Action Row */}
+                        <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/5">
+                             {/* Tagline / Sub info */}
+                            <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-semibold bg-slate-900/50 px-2 py-1 rounded-md">
+                                <Sparkles size={10} className="text-yellow-500" />
+                                <span className="truncate max-w-[100px]">{domain.tagline}</span>
+                            </div>
+
+                            {/* Buy Button */}
+                            <div className="flex items-center gap-1 text-xs font-bold text-purple-400 hover:text-pink-400 cursor-pointer transition-colors group/btn">
+                                <span>{data.labels.buyNow || "Mua ngay"}</span>
+                                <ArrowUpRight size={14} className="group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </Card>
